@@ -78,6 +78,12 @@ def Centre_Back():
     notebook_path = 'D:/Practice_ml/Fifa/Centre_Back.ipynb'  
     return Top_players(notebook_path)
 
+@app.route('/Striker', methods=['GET'])
+def Centre_Back():
+
+    notebook_path = 'D:/Practice_ml/Fifa/Stricker.ipynb'  
+    return Top_players(notebook_path)
+
 # @app.route('/Goal-Keeper', methods=['GET'])
 # def Goal_Keeper():
 
