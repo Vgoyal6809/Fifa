@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 import nbformat
 from nbconvert import PythonExporter
 import subprocess
-
+import os
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -38,51 +38,58 @@ def Top_players(notebook_path):
 @app.route('/Left-Forward', methods=['GET'])
 def Left_Forward():
 
-    notebook_path = 'D:/Practice_ml/Fifa/Left_Forward.ipynb'  
+    notebook_path = './Left_Forward.ipynb'  
     return Top_players(notebook_path)
     
 
 @app.route('/Left-Back', methods=['GET'])
 def Left_Back():
-    notebook_path = 'D:/Practice_ml/Fifa/Left_Back.ipynb'  
+    notebook_path = './Left_Back.ipynb'  
     return Top_players(notebook_path)
 
 
 @app.route('/Left-Mid', methods=['GET'])
 def Left_Mid():
 
-    notebook_path = 'D:/Practice_ml/Fifa/Left_Mid.ipynb'  
+    notebook_path = './Left_Mid.ipynb'  
     return Top_players(notebook_path)
 
 @app.route('/Right-Forward', methods=['GET'])
 def Right_Forward():
 
-    notebook_path = 'D:/Practice_ml/Fifa/Right_Forward.ipynb'  
+    notebook_path = './Right_Forward.ipynb'  
     return Top_players(notebook_path)
 
 @app.route('/Right-Back', methods=['GET'])
 def Right_Back():
 
-    notebook_path = 'D:/Practice_ml/Fifa/Right_Back.ipynb'  
+    notebook_path = './Right_Back.ipynb'  
     return Top_players(notebook_path)
 
 @app.route('/Right-Mid', methods=['GET'])
 def Right_Mid():
 
-    notebook_path = 'D:/Practice_ml/Fifa/Right_Mid.ipynb'  
+    notebook_path = './Right_Mid.ipynb'  
     return Top_players(notebook_path)
 
 @app.route('/Centre-Back', methods=['GET'])
 def Centre_Back():
 
-    notebook_path = 'D:/Practice_ml/Fifa/Centre_Back.ipynb'  
+    notebook_path = './Centre_Back.ipynb'  
+    return Top_players(notebook_path)
+
+@app.route('/Stricker', methods=['GET'])
+def Stricker():
+
+    notebook_path = './Stricker.ipynb'  
     return Top_players(notebook_path)
 
 # @app.route('/Goal-Keeper', methods=['GET'])
 # def Goal_Keeper():
 
-#     notebook_path = 'D:/Practice_ml/Fifa/Goal_Keeper.ipynb'  
+#     notebook_path = './Goal_Keeper.ipynb'  
 #     return Top_players(notebook_path)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+
