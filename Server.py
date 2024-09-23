@@ -37,9 +37,11 @@ def Top_players(notebook_path):
 
 @app.route('/Left-Forward', methods=['GET'])
 def Left_Forward():
-
-    notebook_path = './Left_Forward.ipynb'  
-    return Top_players(notebook_path)
+    try:
+        notebook_path = './Left_Forward.ipynb'
+        return Top_players(notebook_path)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
     
 
 @app.route('/Left-Back', methods=['GET'])
