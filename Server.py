@@ -34,7 +34,6 @@ def Top_players(notebook_path):
     else:
         return jsonify({"status": "success", "data": data.to_dict(orient='records')})
 
-
 @app.route('/Left-Forward', methods=['GET'])
 def Left_Forward():
     try:
@@ -42,49 +41,69 @@ def Left_Forward():
         return Top_players(notebook_path)
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-    
+
 
 @app.route('/Left-Back', methods=['GET'])
 def Left_Back():
-    notebook_path = './Left_Back.ipynb'  
-    return Top_players(notebook_path)
+    try:
+        notebook_path = './Left_Back.ipynb'  
+        return Top_players(notebook_path)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 @app.route('/Left-Mid', methods=['GET'])
 def Left_Mid():
+    try:
+        notebook_path = './Left_Mid.ipynb'  
+        return Top_players(notebook_path)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
-    notebook_path = './Left_Mid.ipynb'  
-    return Top_players(notebook_path)
 
 @app.route('/Right-Forward', methods=['GET'])
 def Right_Forward():
+    try:
+        notebook_path = './Right_Forward.ipynb'  
+        return Top_players(notebook_path)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
-    notebook_path = './Right_Forward.ipynb'  
-    return Top_players(notebook_path)
 
 @app.route('/Right-Back', methods=['GET'])
 def Right_Back():
+    try:
+        notebook_path = './Right_Back.ipynb'  
+        return Top_players(notebook_path)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
-    notebook_path = './Right_Back.ipynb'  
-    return Top_players(notebook_path)
 
 @app.route('/Right-Mid', methods=['GET'])
 def Right_Mid():
+    try:
+        notebook_path = './Right_Mid.ipynb'  
+        return Top_players(notebook_path)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
-    notebook_path = './Right_Mid.ipynb'  
-    return Top_players(notebook_path)
 
 @app.route('/Centre-Back', methods=['GET'])
 def Centre_Back():
+    try:
+        notebook_path = './Centre_Back.ipynb'  
+        return Top_players(notebook_path)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
-    notebook_path = './Centre_Back.ipynb'  
-    return Top_players(notebook_path)
 
 @app.route('/Stricker', methods=['GET'])
 def Stricker():
-
-    notebook_path = './Stricker.ipynb'  
-    return Top_players(notebook_path)
+    try:
+        notebook_path = './Stricker.ipynb'  
+        return Top_players(notebook_path)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 # @app.route('/Goal-Keeper', methods=['GET'])
 # def Goal_Keeper():
