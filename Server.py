@@ -105,11 +105,13 @@ def Stricker():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-# @app.route('/Goal-Keeper', methods=['GET'])
-# def Goal_Keeper():
-
-#     notebook_path = './Goal_Keeper.ipynb'  
-#     return Top_players(notebook_path)
+@app.route('/Goal-Keeper', methods=['GET'])
+def Goal_Keeper():
+    try:
+        notebook_path = './Goal_Keeper.ipynb'  
+        return Top_players(notebook_path)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=int(os.environ.get('PORT', 5000)))
