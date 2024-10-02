@@ -27,7 +27,7 @@ def train_ridge(x_train, y_train):
 def combine_predictions(pred1, pred2, pred3):
     return (pred1 + pred2 + pred3) / 3
 
-def train_and_evaluate(x_train, y_train, x_test, y_test):
+def train_and_evaluate(data, type, x_train, y_train, x_test, y_test):
     # Hyperparameter grid for XGBoost
     param_grid = {
         'n_estimators': [200],
@@ -65,4 +65,11 @@ def train_and_evaluate(x_train, y_train, x_test, y_test):
     print(f'Combined R^2 Test: {r2_test}')
     print(f'Combined R^2 Train: {r2_train}')
     
-    return Combine_test, Combine_train
+    hybrid_pred = (pred_XGboost_y_test + pred_RandomForest_y_test + pred_Ridge_y_test) / 3
+
+    if type == 'potential':
+        data.loc[x_test.index, 'Predicted Potential'] = hybrid_pred
+    else:
+        data.loc[x_test.index, 'Predicted Wage'] = hybrid_pred
+
+    return Combine_test, Combine_train , data
