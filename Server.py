@@ -97,10 +97,10 @@ def Centre_Back():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
-@app.route('/Stricker', methods=['GET'])
-def Stricker():
+@app.route('/Striker', methods=['GET'])
+def Striker():
     try:
-        notebook_path = './Stricker.ipynb'  
+        notebook_path = './Striker.ipynb'  
         return Top_players(notebook_path)
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
