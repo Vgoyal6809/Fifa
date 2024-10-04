@@ -3,7 +3,9 @@ import nbformat
 from nbconvert import PythonExporter
 import subprocess
 import os
+import pickle
 from flask_cors import CORS
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
@@ -25,10 +27,31 @@ def run_notebook(notebook_path):
     output_data = exec_globals.get('data', None)
     return output_data
 
-def Top_players(notebook_path):
+def save_data_pickle(data, pickle_path):
+    # Save the data to a pickle file
+    with open(pickle_path, 'wb') as f:
+        pickle.dump(data, f)
 
-    # Run the notebook and fetch the data
-    data = run_notebook(notebook_path)
+def load_data_pickle(pickle_path):
+    # Load the data from the pickle file
+    with open(pickle_path, 'rb') as f:
+        return pickle.load(f)
+
+def Top_players(notebook_path):
+    # Define pickle file path based on notebook name
+    pickle_path = notebook_path.replace('.ipynb', '.pkl')
+    
+    # Check if the pickle file already exists
+    if os.path.exists(pickle_path):
+        # Load the data from pickle file
+        data = load_data_pickle(pickle_path)
+    else:
+        # Run the notebook and fetch the data
+        data = run_notebook(notebook_path)
+        if data is not None:
+            # Save the data to a pickle file for future use
+            save_data_pickle(data, pickle_path)
+
     if data.empty:  # This checks if the DataFrame is empty
         return jsonify({"status": "error", "message": "No data found"}), 400
     else:
@@ -42,7 +65,6 @@ def Left_Forward():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
 @app.route('/Left-Back', methods=['GET'])
 def Left_Back():
     try:
@@ -50,7 +72,6 @@ def Left_Back():
         return Top_players(notebook_path)
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-
 
 @app.route('/Left-Mid', methods=['GET'])
 def Left_Mid():
@@ -60,7 +81,6 @@ def Left_Mid():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
 @app.route('/Right-Forward', methods=['GET'])
 def Right_Forward():
     try:
@@ -68,7 +88,6 @@ def Right_Forward():
         return Top_players(notebook_path)
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-
 
 @app.route('/Right-Back', methods=['GET'])
 def Right_Back():
@@ -78,7 +97,6 @@ def Right_Back():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
 @app.route('/Right-Mid', methods=['GET'])
 def Right_Mid():
     try:
@@ -86,7 +104,6 @@ def Right_Mid():
         return Top_players(notebook_path)
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-
 
 @app.route('/Centre-Back', methods=['GET'])
 def Centre_Back():
@@ -96,11 +113,10 @@ def Centre_Back():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
-@app.route('/Stricker', methods=['GET'])
-def Stricker():
+@app.route('/Striker', methods=['GET'])
+def Striker():
     try:
-        notebook_path = './Stricker.ipynb'  
+        notebook_path = './Striker.ipynb'  
         return Top_players(notebook_path)
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -115,4 +131,3 @@ def Goal_Keeper():
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=int(os.environ.get('PORT', 5000)))
-
