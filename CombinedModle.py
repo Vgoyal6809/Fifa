@@ -68,8 +68,8 @@ def train_and_evaluate(data, type, x_train, y_train, x_test, y_test):
     hybrid_pred = (pred_XGboost_y_test + pred_RandomForest_y_test + pred_Ridge_y_test) / 3
 
     if type == 'potential':
-        data.loc[x_test.index, 'Predicted Potential'] = hybrid_pred
+        data.loc[x_test.index, 'PredictedPotential'] = hybrid_pred
     else:
-        data.loc[x_test.index, 'Predicted Wage'] = hybrid_pred
+        data.loc[x_test.index, 'PredictedWage'] = hybrid_pred
 
     return Combine_test, Combine_train , data
