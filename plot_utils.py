@@ -19,7 +19,7 @@ def Plot_actual_vs_predicted(y_train, y_test, Combine_train, Combine_test, train
     plt.scatter(y_train, Combine_train, color=train_color, edgecolor='k')
     plt.plot([y_train.min(), y_train.max()], [y_train.min(), y_train.max()], 'r--', lw=2)
     plt.xlabel('Actual Potential (Training)')
-    plt.ylabel('Predicted Potential (Training)')
+    plt.ylabel('PredictedPotential (Training)')
     plt.title('Actual vs Predicted (Training)')
     plt.grid(True)
 
@@ -28,10 +28,10 @@ def Plot_actual_vs_predicted(y_train, y_test, Combine_train, Combine_test, train
     plt.scatter(y_test, Combine_test, color=test_color, edgecolor='k')
     plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2)
     plt.xlabel('Actual Potential (Test)')
-    plt.ylabel('Predicted Potential (Test)')
+    plt.ylabel('PredictedPotential (Test)')
     plt.title('Actual vs Predicted (Test)')
     plt.grid(True)
 
-    plt.suptitle('Actual vs Predicted Potential')
+    plt.suptitle('Actual vs PredictedPotential')
     plt.tight_layout()
     plt.show()
