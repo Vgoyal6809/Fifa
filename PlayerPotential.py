@@ -30,3 +30,4 @@ def get_top_players(Data, x_test, y_test, Predicted_Potential, top_n=10):
     top_players = result_df.sort_values(by='Predicted_Potential', ascending=False).head(top_n)
 
     return top_players
+ 

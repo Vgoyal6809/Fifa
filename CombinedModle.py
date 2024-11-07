@@ -1,4 +1,4 @@
-# COMMON MODEL FOR WAGE AND POTENTIAL PREDICTIONS
+# COMMON MODEL FOR WAGE AND POTENTIAL PREDICTIONS 
 
 from sklearn.model_selection import GridSearchCV
 from xgboost import XGBRegressor
