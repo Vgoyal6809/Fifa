@@ -1,133 +1,103 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, render_template, jsonify
+from flask_cors import CORS
+import os
+from werkzeug.utils import secure_filename
+import json
 import nbformat
 from nbconvert import PythonExporter
-import subprocess
-import os
 import pickle
-from flask_cors import CORS
-import pandas as pd
+
+from Second_Use_Case import analyze_video  # Import your analysis logic
 
 app = Flask(__name__)
 CORS(app)
 
+# Configure upload folder
+app.config['UPLOAD_FOLDER'] = './static/uploaded_videos'
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+# Initialize global player data
+player_data = {}
+
+# Notebook-related functions
 def run_notebook(notebook_path):
-    # Load the notebook
     with open(notebook_path) as f:
         nb = nbformat.read(f, as_version=4)
 
-    # Convert the notebook to a Python script
     exporter = PythonExporter()
     script, _ = exporter.from_notebook_node(nb)
 
-    # Execute the script and collect output
     exec_globals = {}
     exec(script, exec_globals)
-    
-    # Assuming the notebook has a variable `data` that you want to return
-    output_data = exec_globals.get('data', None)
-    return output_data
+
+    # Fetch 'data' from notebook execution
+    return exec_globals.get('data', None)
 
 def save_data_pickle(data, pickle_path):
-    # Save the data to a pickle file
     with open(pickle_path, 'wb') as f:
         pickle.dump(data, f)
 
 def load_data_pickle(pickle_path):
-    # Load the data from the pickle file
     with open(pickle_path, 'rb') as f:
         return pickle.load(f)
 
-def Top_players(notebook_path):
-    # Define pickle file path based on notebook name
+def get_top_players(notebook_path):
     pickle_path = notebook_path.replace('.ipynb', '.pkl')
-    
-    # Check if the pickle file already exists
+
     if os.path.exists(pickle_path):
-        # Load the data from pickle file
         data = load_data_pickle(pickle_path)
     else:
-        # Run the notebook and fetch the data
         data = run_notebook(notebook_path)
         if data is not None:
-            # Save the data to a pickle file for future use
             save_data_pickle(data, pickle_path)
 
-    if data.empty:  # This checks if the DataFrame is empty
+    if data.empty:  # Check if DataFrame is empty
         return jsonify({"status": "error", "message": "No data found"}), 400
     else:
         return jsonify({"status": "success", "data": data.to_dict(orient='records')})
 
-@app.route('/Left-Forward', methods=['GET'])
-def Left_Forward():
-    try:
-        notebook_path = './Left_Forward.ipynb'
-        return Top_players(notebook_path)
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+NOTEBOOK_PATHS = {
+    "Left-Forward": './Left_Forward.ipynb',
+    "Left-Back": './Left_Back.ipynb',
+    "Left-Mid": './Left_Mid.ipynb',
+    "Right-Forward": './Right_Forward.ipynb',
+    "Right-Back": './Right_Back.ipynb',
+    "Right-Mid": './Right_Mid.ipynb',
+    "Centre-Back": './Centre_Back.ipynb',
+    "Striker": './Striker.ipynb',
+    "Goal-Keeper": './Goal_Keeper.ipynb',
+}
 
-@app.route('/Left-Back', methods=['GET'])
-def Left_Back():
-    try:
-        notebook_path = './Left_Back.ipynb'  
-        return Top_players(notebook_path)
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+# Flask Routes
 
-@app.route('/Left-Mid', methods=['GET'])
-def Left_Mid():
-    try:
-        notebook_path = './Left_Mid.ipynb'  
-        return Top_players(notebook_path)
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+@app.route('/upload', methods=['POST'])
+def upload_video():
+    print(request.files)
+    global player_data
+    if 'video' not in request.files:
+        return jsonify({'error': 'No video file uploaded'}), 400
 
-@app.route('/Right-Forward', methods=['GET'])
-def Right_Forward():
-    try:
-        notebook_path = './Right_Forward.ipynb'  
-        return Top_players(notebook_path)
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+    video_file = request.files['video']
+    if video_file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
 
-@app.route('/Right-Back', methods=['GET'])
-def Right_Back():
-    try:
-        notebook_path = './Right_Back.ipynb'  
-        return Top_players(notebook_path)
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+    filename = secure_filename(video_file.filename)
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    video_file.save(file_path)
 
-@app.route('/Right-Mid', methods=['GET'])
-def Right_Mid():
-    try:
-        notebook_path = './Right_Mid.ipynb'  
-        return Top_players(notebook_path)
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+    analyze_video(file_path, player_data)
 
-@app.route('/Centre-Back', methods=['GET'])
-def Centre_Back():
-    try:
-        notebook_path = './Centre_Back.ipynb'  
-        return Top_players(notebook_path)
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+    return(player_data)
 
-@app.route('/Striker', methods=['GET'])
-def Striker():
+@app.route('/<position>', methods=['GET'])
+def get_position_data(position):
     try:
-        notebook_path = './Striker.ipynb'  
-        return Top_players(notebook_path)
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
-
-@app.route('/Goal-Keeper', methods=['GET'])
-def Goal_Keeper():
-    try:
-        notebook_path = './Goal_Keeper.ipynb'  
-        return Top_players(notebook_path)
+        notebook_path = NOTEBOOK_PATHS.get(position)
+        if not notebook_path:
+            return jsonify({"status": "error", "message": f"Position '{position}' not found"}), 404
+        return get_top_players(notebook_path)
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=int(os.environ.get('PORT', 5000)))
+    app.run(host='127.0.0.1', port=int(os.environ.get('PORT', 5000)), debug=True)
